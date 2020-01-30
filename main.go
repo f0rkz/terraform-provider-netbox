@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/tpretz/terraform-provider-netbox/plugin/providers/netbox"
-	"github.com/hashicorp/terraform/plugin"
+	"github.com/h0x91b-wix/terraform-provider-netbox-wix/plugin/providers/netbox"
+
+	"github.com/hashicorp/terraform-plugin-sdk/plugin"
 
 	log "github.com/sirupsen/logrus"
 )

@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/Preskton/go-netbox/netbox/client/ipam"
-	"github.com/Preskton/go-netbox/netbox/models"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/netbox-community/go-netbox/netbox/client/ipam"
+	"github.com/netbox-community/go-netbox/netbox/models"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceNetboxIpamIpAddress is the core Terraform resource structure for the netbox_ipam_ip_address resource.

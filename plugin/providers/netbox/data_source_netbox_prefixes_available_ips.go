@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Preskton/go-netbox/netbox/client/ipam"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/netbox-community/go-netbox/netbox/client/ipam"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceNetboxPrefixesAvailableIps() *schema.Resource {

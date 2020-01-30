@@ -6,8 +6,8 @@ import (
 	// "strconv"
 	"log"
 
-	"github.com/Preskton/go-netbox/netbox/client/ipam"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/netbox-community/go-netbox/netbox/client/ipam"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceNetboxAddress returns the resource structure for the netbox_address
