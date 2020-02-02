@@ -44,7 +44,7 @@ func providerSchema() map[string]*schema.Schema {
 // List of supported resources and their configuration fields.
 func providerResources() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
-		// IPAM
+		// Ipam
 		"netbox_ipam_rir":        resourceNetboxRegionalInternetRegistry(),
 		"netbox_ipam_vrf":        resourceNetboxIpamVrfDomain(),
 		"netbox_ipam_aggregate":  resourceNetboxIpamAggregate(),

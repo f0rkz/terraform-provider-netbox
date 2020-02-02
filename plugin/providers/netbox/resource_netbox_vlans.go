@@ -6,7 +6,7 @@ import (
 	// "strconv"
 	"log"
 
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -38,15 +38,15 @@ func resourceNetboxVlansExists(d *schema.ResourceData, meta interface{}) (b bool
 func resourceNetboxVlansCreate(d *schema.ResourceData, meta interface{}) error {
 	log.Printf("[DEBUG] JP resourceNetboxVlansCreate: %v\n", d)
 	c := meta.(*ProviderNetboxClient).client
-	var parm = ipam.NewIPAMVlansCreateParams()
+	var parm = ipam.NewIpamVlansCreateParams()
 	log.Println("Criei o parm")
 	parm.Data.ID = int64(d.Get("prefixes_id").(int))
 	//parm.Set("ID", int64(d.Get("prefixes_id").(int)))
 	//parm.SetCreated(d.Get("prefixes_created"))
 	log.Println("Setei o parm")
 
-	//parms = ipam.NewIPAMPrefixesListParams()
-	out, err := c.IPAM.IPAMVlansCreate(parm, nil)
+	//parms = ipam.NewIpamPrefixesListParams()
+	out, err := c.Ipam.IpamVlansCreate(parm, nil)
 	log.Printf("- Executado...\n")
 	print("out %v\n", out)
 	print("err %v\n", err)

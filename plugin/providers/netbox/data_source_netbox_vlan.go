@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
 )
 
 func dataSourceNetboxVlans() *schema.Resource {
@@ -18,18 +18,18 @@ func dataSourceNetboxVlans() *schema.Resource {
 
 // Read will fetch the data of a resource.
 func dataSourceNetboxVlansRead(d *schema.ResourceData, meta interface{}) error {
-	//out := ipam.NewIPAMVlansListParams()
+	//out := ipam.NewIpamVlansListParams()
 
-	var parm = ipam.NewIPAMVlansListParams()
+	var parm = ipam.NewIpamVlansListParams()
 	switch {
 	case d.Get("vid").(int) != 0:
-		// func (a *Client) IPAMVlansRead(params *IPAMVlansReadParams, authInfo runtime.ClientAuthInfoWriter) (*IPAMVlansReadOK, error) {
+		// func (a *Client) IpamVlansRead(params *IpamVlansReadParams, authInfo runtime.ClientAuthInfoWriter) (*IpamVlansReadOK, error) {
 		log.Printf("Ok... localizando por vid: %v\n", d.Get("vid").(int))
 		vid := d.Get("vid").(string)
 		parm.SetVid(&vid)
 		c := meta.(*ProviderNetboxClient).client
-		//parms = ipam.NewIPAMVlansListParams()
-		out, err := c.IPAM.IPAMVlansList(parm, nil)
+		//parms = ipam.NewIpamVlansListParams()
+		out, err := c.Ipam.IpamVlansList(parm, nil)
 		log.Printf("- Executado...\n")
 		if err == nil {
 
@@ -54,19 +54,19 @@ func dataSourceNetboxVlansRead(d *schema.ResourceData, meta interface{}) error {
 			d.Set("custom_fields", result.CustomFields)
 
 		} else {
-			log.Printf("erro na chamada do IPAMVlansList\n")
+			log.Printf("erro na chamada do IpamVlansList\n")
 			log.Printf("Err: %v\n", err)
 			log.Print("\n")
 			return err
 		}
 	case d.Get("name").(string) != "":
 		c := meta.(*ProviderNetboxClient).client
-		parmsl := ipam.NewIPAMVlansListParams()
+		parmsl := ipam.NewIpamVlansListParams()
 		name := d.Get("name").(string)
 		log.Printf("Nome: %v\n", name)
 		parmsl.SetName(&name)
 		log.Printf("Parmsl: %v\n", parmsl)
-		out, err := c.IPAM.IPAMVlansList(parmsl, nil)
+		out, err := c.Ipam.IpamVlansList(parmsl, nil)
 		if err == nil {
 			if *out.Payload.Count == 0 {
 				return errors.New("Name not found - Payload = 0 - need one of vid or name")
@@ -90,7 +90,7 @@ func dataSourceNetboxVlansRead(d *schema.ResourceData, meta interface{}) error {
 			d.Set("custom_fields", result.CustomFields)
 			log.Printf("Custom Fields: %v\n", result.CustomFields)
 		} else {
-			log.Printf("erro na chamada do IPAMVlansList\n")
+			log.Printf("erro na chamada do IpamVlansList\n")
 			log.Printf("Err: %v\n", err)
 			return err
 		}

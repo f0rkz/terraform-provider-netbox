@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -213,19 +213,19 @@ func resourceNetboxPrefixesAvailableIpsCreate(d *schema.ResourceData, meta inter
 }
 
 func resourceNetboxPrefixesAvailableIpsRead(d *schema.ResourceData, meta interface{}) error {
-	//out := ipam.NewIPAMPrefixesListParams()
+	//out := ipam.NewIpamPrefixesListParams()
 	log.Printf("resourceNetboxPrefixesAvailableIpsRead ............ ")
 	switch {
 	// Pega por prefix_id
 	case d.Get("address_id").(string) != "":
-		var parm = ipam.NewIPAMIPAddressesReadParams()
+		var parm = ipam.NewIpamIPAddressesReadParams()
 
 		id, _ := strconv.ParseInt(d.Get("address_id").(string), 10, 64)
 		parm.SetID(id)
-		//(&&meta).IPAM.IPAMPrefixesRead(parm,nil)
+		//(&&meta).Ipam.IpamPrefixesRead(parm,nil)
 
 		c := meta.(*ProviderNetboxClient).client
-		out, err := c.IPAM.IPAMIPAddressesRead(parm, nil)
+		out, err := c.Ipam.IpamIPAddressesRead(parm, nil)
 		log.Printf("- Executado...\n")
 		if err == nil {
 
@@ -258,7 +258,7 @@ func resourceNetboxPrefixesAvailableIpsRead(d *schema.ResourceData, meta interfa
 			d.Set("last_updated", out.Payload.LastUpdated)
 			log.Print("\n")
 		} else {
-			log.Printf("erro na chamada do IPAMIPAddressesRead\n")
+			log.Printf("erro na chamada do IpamIPAddressesRead\n")
 			log.Printf("Err: %v\n", err)
 			log.Print("\n")
 			return err
@@ -274,14 +274,14 @@ func resourceNetboxPrefixesAvailableIpsRead(d *schema.ResourceData, meta interfa
 }
 
 func resourceNetboxPrefixesAvailableIpsUpdate(d *schema.ResourceData, meta interface{}) error {
-	//out := ipam.NewIPAMPrefixesListParams()
+	//out := ipam.NewIpamPrefixesListParams()
 	log.Printf("resourceNetboxPrefixesAvailableIpsUpdate ............ ")
 	// switch {
 	// // Pega por prefix_id
 	// case d.Get("address_id").(int) != 0: // Obrigatório
-	// 	var parm = ipam.NewIPAMIPAddressesUpdateParams()
+	// 	var parm = ipam.NewIpamIPAddressesUpdateParams()
 	// 	parm.SetID(int64(d.Get("prefixes_id").(int)))
-	// 	//(&&meta).IPAM.IPAMPrefixesRead(parm,nil)
+	// 	//(&&meta).Ipam.IpamPrefixesRead(parm,nil)
 	//
 	// 	var entrada = models.WritableIPAddress{}
 	// 	entrada.Address = d.Get("address").(*string)
@@ -291,7 +291,7 @@ func resourceNetboxPrefixesAvailableIpsUpdate(d *schema.ResourceData, meta inter
 	// 	entrada.ID = d.Get("address_id").(int64)
 	// 	parm.SetData(&entrada)
 	// 	c := meta.(*ProviderNetboxClient).client
-	// 	out, err := c.IPAM.IPAMIPAddressesUpdate(parm, nil)
+	// 	out, err := c.Ipam.IpamIPAddressesUpdate(parm, nil)
 	// 	log.Printf("- Executado...\n")
 	// 	if err == nil {
 	//
@@ -305,7 +305,7 @@ func resourceNetboxPrefixesAvailableIpsUpdate(d *schema.ResourceData, meta inter
 	// 		d.Set("last_updated", out.Payload.LastUpdated)
 	// 		log.Print("\n")
 	// 	} else {
-	// 		log.Printf("erro na chamada do IPAMIPAddressesRead\n")
+	// 		log.Printf("erro na chamada do IpamIPAddressesRead\n")
 	// 		log.Printf("Err: %v\n", err)
 	// 		log.Print("\n")
 	// 		return err
@@ -321,13 +321,13 @@ func resourceNetboxPrefixesAvailableIpsUpdate(d *schema.ResourceData, meta inter
 	return nil
 }
 func resourceNetboxPrefixesAvailableIpsDelete(d *schema.ResourceData, meta interface{}) error {
-	//out := ipam.NewIPAMPrefixesListParams()
+	//out := ipam.NewIpamPrefixesListParams()
 	log.Printf("resourceNetboxPrefixesAvailableIpsDelete ............ ")
 	log.Printf("[DEBUG] d -> [%v]\n", d)
 	switch {
 	// Pega por prefix_id
 	case d.Id() != "": // Obrigatório
-		var parm = ipam.NewIPAMIPAddressesDeleteParams()
+		var parm = ipam.NewIpamIPAddressesDeleteParams()
 
 		log.Printf("[DEBUG] Id [%v]\n", d.Id())
 		id, _ := strconv.ParseInt(d.Id(), 10, 64)
@@ -335,12 +335,12 @@ func resourceNetboxPrefixesAvailableIpsDelete(d *schema.ResourceData, meta inter
 		log.Printf("[DEBUG] Deletando IP Address ID [%v]\n", id)
 
 		c := meta.(*ProviderNetboxClient).client
-		_, err := c.IPAM.IPAMIPAddressesDelete(parm, nil)
+		_, err := c.Ipam.IpamIPAddressesDelete(parm, nil)
 		log.Printf("- Executado Delete...\n")
 		if err == nil {
 			log.Printf("[DEBUG] Recurso %v deletado\n", d.Get("address_id").(string))
 		} else {
-			log.Printf("erro na chamada do IPAMIPAddressesDelete\n")
+			log.Printf("erro na chamada do IpamIPAddressesDelete\n")
 			log.Printf("Err: %v\n", err)
 			log.Print("\n")
 			return err

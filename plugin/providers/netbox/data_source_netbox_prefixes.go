@@ -5,12 +5,12 @@ import (
 	//"fmt"
 	"log"
 	"strconv"
-  "strings"
+	"strings"
 
 	// "errors"
 
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
-	"github.com/netbox-community/go-netbox/netbox/models"
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
+	"github.com/h0x91b-wix/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -22,104 +22,104 @@ func dataSourceNetboxPrefixes() *schema.Resource {
 }
 
 func dataSourceNetboxPrefixParse(d *schema.ResourceData, obj *models.Prefix) {
-  d.SetId(strconv.FormatInt(obj.ID, 10))
-  d.Set("created", obj.Created.String())
-  d.Set("description", obj.Description)
-  d.Set("family", obj.Family)
-  d.Set("is_pool", obj.IsPool)
-  d.Set("prefix", obj.Prefix)
-  d.Set("last_updated", obj.LastUpdated)
+	d.SetId(strconv.FormatInt(obj.ID, 10))
+	d.Set("created", obj.Created.String())
+	d.Set("description", obj.Description)
+	d.Set("family", obj.Family)
+	d.Set("is_pool", obj.IsPool)
+	d.Set("prefix", obj.Prefix)
+	d.Set("last_updated", obj.LastUpdated)
 
-  if obj.Vlan != nil {
-    d.Set("vlan_vid", *obj.Vlan.Vid)
-  }
+	if obj.Vlan != nil {
+		d.Set("vlan_vid", *obj.Vlan.Vid)
+	}
 
-  log.Printf("Finished parsing results from IPAMPrefixesRead")
+	log.Printf("Finished parsing results from IpamPrefixesRead")
 }
 
 func dataSourceNetboxPrefixAttrPrep(in string) (out string) {
-  lowerstr := strings.ToLower(in)
-  out = strings.Replace(lowerstr, " ", "-", -1)
+	lowerstr := strings.ToLower(in)
+	out = strings.Replace(lowerstr, " ", "-", -1)
 
-  return
+	return
 }
 
 // Read will fetch the data of a resource.
 func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) error {
-  c := meta.(*ProviderNetboxClient).client
+	c := meta.(*ProviderNetboxClient).client
 
-  // primary key lookup, direct
-  if id, idOk := d.GetOk("prefixes_id"); idOk {
-    parm := ipam.NewIPAMPrefixesReadParams()
+	// primary key lookup, direct
+	if id, idOk := d.GetOk("prefixes_id"); idOk {
+		parm := ipam.NewIpamPrefixesReadParams()
 		parm.SetID(int64(id.(int)))
 
-		out, err := c.IPAM.IPAMPrefixesRead(parm, nil)
+		out, err := c.Ipam.IpamPrefixesRead(parm, nil)
 
 		if err != nil {
-      log.Printf("error from IPAMPrefixesRead: %v\n", err)
+			log.Printf("error from IpamPrefixesRead: %v\n", err)
 			return err
-    }
+		}
 
-    dataSourceNetboxPrefixParse(d, out.Payload)
-  } else { // anything else, requires a search
-    param := ipam.NewIPAMPrefixesListParams()
+		dataSourceNetboxPrefixParse(d, out.Payload)
+	} else { // anything else, requires a search
+		param := ipam.NewIpamPrefixesListParams()
 
-    // Add any lookup params
+		// Add any lookup params
 
-    if vid, vidOk := d.GetOk("vlan_vid"); vidOk {
-      vlan_vid := float64(vid.(int))
-      param.SetVlanVid(&vlan_vid)
-    }
+		if vid, vidOk := d.GetOk("vlan_vid"); vidOk {
+			vlan_vid := float64(vid.(int))
+			param.SetVlanVid(&vlan_vid)
+		}
 
-    if query, queryOk := d.GetOk("query"); queryOk {
-      query_str := query.(string)
-      param.SetQ(&query_str)
-    }
+		if query, queryOk := d.GetOk("query"); queryOk {
+			query_str := query.(string)
+			param.SetQ(&query_str)
+		}
 
-    if within, withinOk := d.GetOk("within"); withinOk {
-      within_str := within.(string)
-      param.SetWithin(&within_str)
-    }
+		if within, withinOk := d.GetOk("within"); withinOk {
+			within_str := within.(string)
+			param.SetWithin(&within_str)
+		}
 
-    if family, familyOk := d.GetOk("family"); familyOk {
-      family_str := family.(string)
-      param.SetFamily(&family_str)
-    }
+		if family, familyOk := d.GetOk("family"); familyOk {
+			family_str := family.(string)
+			param.SetFamily(&family_str)
+		}
 
-    if tenant, tenantOk := d.GetOk("tenant"); tenantOk {
-      tenant_str := dataSourceNetboxPrefixAttrPrep(tenant.(string))
-      param.SetTenant(&tenant_str)
-    }
+		if tenant, tenantOk := d.GetOk("tenant"); tenantOk {
+			tenant_str := dataSourceNetboxPrefixAttrPrep(tenant.(string))
+			param.SetTenant(&tenant_str)
+		}
 
-    if site, siteOk := d.GetOk("site"); siteOk {
-      site_str := dataSourceNetboxPrefixAttrPrep(site.(string))
-      param.SetSite(&site_str)
-    }
+		if site, siteOk := d.GetOk("site"); siteOk {
+			site_str := dataSourceNetboxPrefixAttrPrep(site.(string))
+			param.SetSite(&site_str)
+		}
 
-    if role, roleOk := d.GetOk("role"); roleOk {
-      role_str := dataSourceNetboxPrefixAttrPrep(role.(string))
-      param.SetRole(&role_str)
-    }
+		if role, roleOk := d.GetOk("role"); roleOk {
+			role_str := dataSourceNetboxPrefixAttrPrep(role.(string))
+			param.SetRole(&role_str)
+		}
 
-    // limit to 2
-    limit := int64(2)
-    param.SetLimit(&limit)
+		// limit to 2
+		limit := int64(2)
+		param.SetLimit(&limit)
 
-		out, err := c.IPAM.IPAMPrefixesList(param, nil)
+		out, err := c.Ipam.IpamPrefixesList(param, nil)
 
 		if err != nil {
-      log.Printf("error from IPAMPrefixesList: %v\n", err)
+			log.Printf("error from IpamPrefixesList: %v\n", err)
 			return err
-    }
+		}
 
-    if *out.Payload.Count == 0 {
+		if *out.Payload.Count == 0 {
 			return errors.New("Prefix not found")
-    } else if *out.Payload.Count > 1 {
-      return errors.New("More than one prefix matches search terms, please narrow")
-    }
+		} else if *out.Payload.Count > 1 {
+			return errors.New("More than one prefix matches search terms, please narrow")
+		}
 
-    dataSourceNetboxPrefixParse(d, out.Payload.Results[0])
-  }
+		dataSourceNetboxPrefixParse(d, out.Payload.Results[0])
+	}
 
 	return nil
 }
@@ -154,24 +154,24 @@ func barePrefixesSchema() map[string]*schema.Schema {
 			Type: schema.TypeInt,
 		},
 		"query": &schema.Schema{
-			Type: schema.TypeString,
-      Optional: true,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 		"tenant": &schema.Schema{
-			Type: schema.TypeString,
-      Optional: true,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 		"site": &schema.Schema{
-			Type: schema.TypeString,
-      Optional: true,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 		"role": &schema.Schema{
-			Type: schema.TypeString,
-      Optional: true,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 		"within": &schema.Schema{
-			Type: schema.TypeString,
-      Optional: true,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 	}
 }

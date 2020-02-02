@@ -6,8 +6,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/netbox-community/go-netbox/netbox/client/tenancy"
-	"github.com/netbox-community/go-netbox/netbox/models"
+	"github.com/h0x91b-wix/go-netbox/netbox/client/tenancy"
+	"github.com/h0x91b-wix/go-netbox/netbox/models"
 )
 
 // resourceNetboxOrgTenant is the core Terraform resource structure for the netbox_org_tenant resource.

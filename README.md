@@ -6,11 +6,11 @@ This repository holds a external plugin for a [Terraform][1] provider to manage 
 
 [1]: https://www.terraform.io/
 [2]: https://github.com/digitalocean/netbox
-[3]: https://github.com/netbox-community/go-netbox
+[3]: https://github.com/h0x91b-wix/go-netbox
 
 ## About Netbox
 
-[Netbox][2] is an IP address management (IPAM) and data center infrastructure management (DCIM) created by DigitalOcean. By leveraging the work at [go-netbox][3], 
+[Netbox][2] is an IP address management (Ipam) and data center infrastructure management (DCIM) created by DigitalOcean. By leveraging the work at [go-netbox][3], 
 `terraform-provider-netbox` allows you to declaratively describe your infrastructure using HCL to keep track of your infrastructure. The real value of this
 solution comes through when you combine it with your other Terraform providers to store information like cloud provider-assigned networks and IPs.
 
@@ -38,7 +38,7 @@ Where `app_id` is a Netbox token created in the Netbox Admin portal (click your 
 
 Once configured, you can use any of the following resources:
 
-- IPAM Resources:
+- Ipam Resources:
   - `netbox_ipam_rir` - regional internet registries
   - `netbox_ipam_vrf` - virtual routing & forwarding groups
   - `netbox_ipam_aggregate` - top level aggregates
@@ -124,7 +124,7 @@ resource "netbox_ipam_ip_address" "toni-kensa-west-primary-router" {
     // Use the tenant from above
     tenant_id = "${netbox_org_tenant.squid-kids.tenant_id}"
     // Sorry not quite using the names yet - you've got to reference the ID!
-    // for IPAM resources, these are available at https://your-netbox/api/ipam/_choices
+    // for Ipam resources, these are available at https://your-netbox/api/ipam/_choices
     status = 1
 }
 

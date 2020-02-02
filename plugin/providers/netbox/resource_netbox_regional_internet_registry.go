@@ -5,8 +5,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
-	"github.com/netbox-community/go-netbox/netbox/models"
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
+	"github.com/h0x91b-wix/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -51,7 +51,7 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 	slug := d.Get("slug").(string)
 	isPrivate := d.Get("is_private").(bool)
 
-	var parm = ipam.NewIPAMRirsCreateParams().WithData(
+	var parm = ipam.NewIpamRirsCreateParams().WithData(
 		&models.RIR{
 			Slug:      &slug,
 			Name:      &name,
@@ -59,12 +59,12 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 		},
 	)
 
-	log.Debugf("Executing IPAMRirsCreate against Netbox: %v", parm)
+	log.Debugf("Executing IpamRirsCreate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMRirsCreate(parm, nil)
+	out, err := netboxClient.Ipam.IpamRirsCreate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMRirsCreate: %v", err)
+		log.Debugf("Failed to execute IpamRirsCreate: %v", err)
 
 		return err
 	}
@@ -73,7 +73,7 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 	d.SetId(fmt.Sprintf("ipam/rir/%v", out.Payload.ID))
 	d.Set("rir_id", out.Payload.ID)
 
-	log.Debugf("Done Executing IPAMRirsCreate: %v", out)
+	log.Debugf("Done Executing IpamRirsCreate: %v", out)
 
 	return nil
 }
@@ -88,7 +88,7 @@ func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta i
 	slug := d.Get("slug").(string)
 	isPrivate := d.Get("is_private").(bool)
 
-	var parm = ipam.NewIPAMRirsUpdateParams().
+	var parm = ipam.NewIpamRirsUpdateParams().
 		WithID(netboxID).
 		WithData(
 			&models.RIR{
@@ -98,17 +98,17 @@ func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta i
 			},
 		)
 
-	log.Debugf("Executing IPAMRirsUpdate against Netbox: %v", parm)
+	log.Debugf("Executing IpamRirsUpdate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMRirsUpdate(parm, nil)
+	out, err := netboxClient.Ipam.IpamRirsUpdate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMRirsUpdate: %v", err)
+		log.Debugf("Failed to execute IpamRirsUpdate: %v", err)
 
 		return err
 	}
 
-	log.Debugf("Done Executing IPAMRirsUpdate: %v", out)
+	log.Debugf("Done Executing IpamRirsUpdate: %v", out)
 
 	return nil
 }
@@ -120,9 +120,9 @@ func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta int
 	//terraformID := d.Id()
 	netboxID := int64(d.Get("rir_id").(int))
 
-	var readParams = ipam.NewIPAMRirsReadParams().WithID(netboxID)
+	var readParams = ipam.NewIpamRirsReadParams().WithID(netboxID)
 
-	readRirResult, err := netboxClient.IPAM.IPAMRirsRead(readParams, nil)
+	readRirResult, err := netboxClient.Ipam.IpamRirsRead(readParams, nil)
 
 	if err != nil {
 		log.Debugf("Error fetching RIR ID # %d from Netbox = %v", netboxID, err)
@@ -145,17 +145,17 @@ func resourceNetboxRegionalInternetRegistryDelete(d *schema.ResourceData, meta i
 
 	netboxID := int64(d.Get("rir_id").(int))
 
-	var deleteParameters = ipam.NewIPAMRirsDeleteParams().WithID(netboxID)
+	var deleteParameters = ipam.NewIpamRirsDeleteParams().WithID(netboxID)
 
 	c := meta.(*ProviderNetboxClient).client
 
-	out, err := c.IPAM.IPAMRirsDelete(deleteParameters, nil)
+	out, err := c.Ipam.IpamRirsDelete(deleteParameters, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMRirsDelete: %v", err)
+		log.Debugf("Failed to execute IpamRirsDelete: %v", err)
 	}
 
-	log.Debugf("Done Executing IPAMRirsDelete: %v", out)
+	log.Debugf("Done Executing IpamRirsDelete: %v", out)
 
 	return nil
 }

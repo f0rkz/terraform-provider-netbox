@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
+	"github.com/h0x91b-wix/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
-	"github.com/netbox-community/go-netbox/netbox/models"
 )
 
 // resourceNetboxIpamPrefix is the core Terraform resource structure for the netbox_ipam_Prefix_domain resource.
@@ -67,7 +67,7 @@ func resourceNetboxIpamPrefixCreate(d *schema.ResourceData, meta interface{}) er
 	//status := d.Get("status").(string)
 	tenantID := int64(d.Get("tenant_id").(int))
 
-	var parm = ipam.NewIPAMPrefixesCreateParams().WithData(
+	var parm = ipam.NewIpamPrefixesCreateParams().WithData(
 		&models.WritablePrefix{
 			Prefix:      &prefix,
 			Description: description,
@@ -78,12 +78,12 @@ func resourceNetboxIpamPrefixCreate(d *schema.ResourceData, meta interface{}) er
 		},
 	)
 
-	log.Debugf("Executing IPAMPrefixesCreate against Netbox: %v", parm)
+	log.Debugf("Executing IpamPrefixesCreate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMPrefixesCreate(parm, nil)
+	out, err := netboxClient.Ipam.IpamPrefixesCreate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMPrefixesCreate: %v", err)
+		log.Debugf("Failed to execute IpamPrefixesCreate: %v", err)
 
 		return err
 	}
@@ -92,7 +92,7 @@ func resourceNetboxIpamPrefixCreate(d *schema.ResourceData, meta interface{}) er
 	d.SetId(fmt.Sprintf("ipam/prefix/%d", out.Payload.ID))
 	d.Set("prefix_id", out.Payload.ID)
 
-	log.Debugf("Done Executing IPAMPrefixesCreate: %v", out)
+	log.Debugf("Done Executing IpamPrefixesCreate: %v", out)
 
 	return nil
 }
@@ -110,7 +110,7 @@ func resourceNetboxIpamPrefixUpdate(d *schema.ResourceData, meta interface{}) er
 	//status := d.Get("status").(string)
 	tenantID := int64(d.Get("tenant_id").(int))
 
-	var parm = ipam.NewIPAMPrefixesUpdateParams().
+	var parm = ipam.NewIpamPrefixesUpdateParams().
 		WithID(id).
 		WithData(
 			&models.WritablePrefix{
@@ -123,17 +123,17 @@ func resourceNetboxIpamPrefixUpdate(d *schema.ResourceData, meta interface{}) er
 			},
 		)
 
-	log.Debugf("Executing IPAMPrefixesUpdate against Netbox: %v", parm)
+	log.Debugf("Executing IpamPrefixesUpdate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMPrefixesUpdate(parm, nil)
+	out, err := netboxClient.Ipam.IpamPrefixesUpdate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMPrefixesUpdate: %v", err)
+		log.Debugf("Failed to execute IpamPrefixesUpdate: %v", err)
 
 		return err
 	}
 
-	log.Debugf("Done Executing IPAMPrefixesUpdate: %v", out)
+	log.Debugf("Done Executing IpamPrefixesUpdate: %v", out)
 
 	return nil
 }
@@ -144,9 +144,9 @@ func resourceNetboxIpamPrefixRead(d *schema.ResourceData, meta interface{}) erro
 
 	id := int64(d.Get("prefix_id").(int))
 
-	var readParams = ipam.NewIPAMPrefixesReadParams().WithID(id)
+	var readParams = ipam.NewIpamPrefixesReadParams().WithID(id)
 
-	readResult, err := netboxClient.IPAM.IPAMPrefixesRead(readParams, nil)
+	readResult, err := netboxClient.Ipam.IpamPrefixesRead(readParams, nil)
 
 	if err != nil {
 		log.Debugf("Error fetching Prefix ID # %d from Netbox = %v", id, err)
@@ -178,17 +178,17 @@ func resourceNetboxIpamPrefixDelete(d *schema.ResourceData, meta interface{}) er
 
 	id := int64(d.Get("prefix_id").(int))
 
-	var deleteParameters = ipam.NewIPAMPrefixesDeleteParams().WithID(id)
+	var deleteParameters = ipam.NewIpamPrefixesDeleteParams().WithID(id)
 
 	c := meta.(*ProviderNetboxClient).client
 
-	out, err := c.IPAM.IPAMPrefixesDelete(deleteParameters, nil)
+	out, err := c.Ipam.IpamPrefixesDelete(deleteParameters, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMPrefixesDelete: %v", err)
+		log.Debugf("Failed to execute IpamPrefixesDelete: %v", err)
 	}
 
-	log.Debugf("Done Executing IPAMPrefixesDelete: %v", out)
+	log.Debugf("Done Executing IpamPrefixesDelete: %v", out)
 
 	return nil
 }

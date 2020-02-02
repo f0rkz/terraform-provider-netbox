@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
+	"github.com/h0x91b-wix/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
-	"github.com/netbox-community/go-netbox/netbox/models"
 )
 
 // resourceNetboxIpamAggregate is the core Terraform resource structure for the netbox_ipam_aggregate resource.
@@ -58,7 +58,7 @@ func resourceNetboxIpamAggregateCreate(d *schema.ResourceData, meta interface{})
 	// TODO dateAdded
 	tags := []string{}
 
-	var parm = ipam.NewIPAMAggregatesCreateParams().WithData(
+	var parm = ipam.NewIpamAggregatesCreateParams().WithData(
 		&models.WritableAggregate{
 			Prefix:      &prefix,
 			Description: description,
@@ -68,12 +68,12 @@ func resourceNetboxIpamAggregateCreate(d *schema.ResourceData, meta interface{})
 		},
 	)
 
-	log.Debugf("Executing IPAMAggregatesCreate against Netbox: %v", parm)
+	log.Debugf("Executing IpamAggregatesCreate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMAggregatesCreate(parm, nil)
+	out, err := netboxClient.Ipam.IpamAggregatesCreate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMAggregatesCreate: %v", err)
+		log.Debugf("Failed to execute IpamAggregatesCreate: %v", err)
 
 		return err
 	}
@@ -81,7 +81,7 @@ func resourceNetboxIpamAggregateCreate(d *schema.ResourceData, meta interface{})
 	// TODO Probably a better way to parse this ID
 	d.SetId(strconv.Itoa(int(out.Payload.ID)))
 
-	log.Debugf("Done Executing IPAMAggregatesCreate: %v", out)
+	log.Debugf("Done Executing IpamAggregatesCreate: %v", out)
 
 	return nil
 }
@@ -103,7 +103,7 @@ func resourceNetboxIpamAggregateUpdate(d *schema.ResourceData, meta interface{})
 	// TODO dateAdded
 	tags := []string{}
 
-	var parm = ipam.NewIPAMAggregatesUpdateParams().WithID(int64(id)).WithData(
+	var parm = ipam.NewIpamAggregatesUpdateParams().WithID(int64(id)).WithData(
 		&models.WritableAggregate{
 			Prefix:      &prefix,
 			Description: description,
@@ -113,17 +113,17 @@ func resourceNetboxIpamAggregateUpdate(d *schema.ResourceData, meta interface{})
 		},
 	)
 
-	log.Debugf("Executing IPAMAggregatesUpdate against Netbox: %v", parm)
+	log.Debugf("Executing IpamAggregatesUpdate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMAggregatesUpdate(parm, nil)
+	out, err := netboxClient.Ipam.IpamAggregatesUpdate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMAggregatesUpdate: %v", err)
+		log.Debugf("Failed to execute IpamAggregatesUpdate: %v", err)
 
 		return err
 	}
 
-	log.Debugf("Done Executing IPAMAggregatesUpdate: %v", out)
+	log.Debugf("Done Executing IpamAggregatesUpdate: %v", out)
 
 	return nil
 }
@@ -139,9 +139,9 @@ func resourceNetboxIpamAggregateRead(d *schema.ResourceData, meta interface{}) e
 		return err
 	}
 
-	var readParams = ipam.NewIPAMAggregatesReadParams().WithID(int64(id))
+	var readParams = ipam.NewIpamAggregatesReadParams().WithID(int64(id))
 
-	readResult, err := netboxClient.IPAM.IPAMAggregatesRead(readParams, nil)
+	readResult, err := netboxClient.Ipam.IpamAggregatesRead(readParams, nil)
 
 	if err != nil {
 		log.Debugf("Error fetching aggregate ID # %d from Netbox = %v", id, err)
@@ -169,17 +169,17 @@ func resourceNetboxIpamAggregateDelete(d *schema.ResourceData, meta interface{})
 		return err
 	}
 
-	var deleteParameters = ipam.NewIPAMAggregatesDeleteParams().WithID(int64(id))
+	var deleteParameters = ipam.NewIpamAggregatesDeleteParams().WithID(int64(id))
 
 	c := meta.(*ProviderNetboxClient).client
 
-	out, err := c.IPAM.IPAMAggregatesDelete(deleteParameters, nil)
+	out, err := c.Ipam.IpamAggregatesDelete(deleteParameters, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMAggregatesDelete: %v", err)
+		log.Debugf("Failed to execute IpamAggregatesDelete: %v", err)
 	}
 
-	log.Debugf("Done Executing IPAMAggregatesDelete: %v", out)
+	log.Debugf("Done Executing IpamAggregatesDelete: %v", out)
 
 	return nil
 }

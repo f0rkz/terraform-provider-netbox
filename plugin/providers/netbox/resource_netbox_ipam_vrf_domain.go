@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
+	"github.com/h0x91b-wix/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/netbox-community/go-netbox/netbox/client/ipam"
-	"github.com/netbox-community/go-netbox/netbox/models"
 )
 
 // resourceNetboxIpamVrfDomain is the core Terraform resource structure for the netbox_ipam_vrf_domain resource.
@@ -61,7 +61,7 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 	description := d.Get("description").(string)
 	tenantID := int64(d.Get("tenant_id").(int))
 
-	var parm = ipam.NewIPAMVrfsCreateParams().WithData(
+	var parm = ipam.NewIpamVrfsCreateParams().WithData(
 		&models.WritableVRF{
 			Rd:            &routeDistinguisher,
 			Name:          &name,
@@ -72,12 +72,12 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 		},
 	)
 
-	log.Debugf("Executing IPAMVrfsCreate against Netbox: %v", parm)
+	log.Debugf("Executing IpamVrfsCreate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMVrfsCreate(parm, nil)
+	out, err := netboxClient.Ipam.IpamVrfsCreate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMVrfsCreate: %v", err)
+		log.Debugf("Failed to execute IpamVrfsCreate: %v", err)
 
 		return err
 	}
@@ -86,7 +86,7 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 	d.SetId(fmt.Sprintf("ipam/vrf/%d", out.Payload.ID))
 	d.Set("vrf_id", out.Payload.ID)
 
-	log.Debugf("Done Executing IPAMVrfsCreate: %v", out)
+	log.Debugf("Done Executing IpamVrfsCreate: %v", out)
 
 	return nil
 }
@@ -103,7 +103,7 @@ func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{})
 	description := d.Get("description").(string)
 	tenantID := int64(d.Get("tenant_id").(int))
 
-	var parm = ipam.NewIPAMVrfsUpdateParams().
+	var parm = ipam.NewIpamVrfsUpdateParams().
 		WithID(id).
 		WithData(
 			&models.WritableVRF{
@@ -116,17 +116,17 @@ func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{})
 			},
 		)
 
-	log.Debugf("Executing IPAMVrfsUpdate against Netbox: %v", parm)
+	log.Debugf("Executing IpamVrfsUpdate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMVrfsUpdate(parm, nil)
+	out, err := netboxClient.Ipam.IpamVrfsUpdate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMVrfsUpdate: %v", err)
+		log.Debugf("Failed to execute IpamVrfsUpdate: %v", err)
 
 		return err
 	}
 
-	log.Debugf("Done Executing IPAMVrfsUpdate: %v", out)
+	log.Debugf("Done Executing IpamVrfsUpdate: %v", out)
 
 	return nil
 }
@@ -137,9 +137,9 @@ func resourceNetboxIpamVrfDomainRead(d *schema.ResourceData, meta interface{}) e
 
 	id := int64(d.Get("vrf_id").(int))
 
-	var readParams = ipam.NewIPAMVrfsReadParams().WithID(id)
+	var readParams = ipam.NewIpamVrfsReadParams().WithID(id)
 
-	readResult, err := netboxClient.IPAM.IPAMVrfsRead(readParams, nil)
+	readResult, err := netboxClient.Ipam.IpamVrfsRead(readParams, nil)
 
 	if err != nil {
 		log.Debugf("Error fetching VRF ID # %d from Netbox = %v", id, err)
@@ -166,17 +166,17 @@ func resourceNetboxIpamVrfDomainDelete(d *schema.ResourceData, meta interface{})
 
 	id := int64(d.Get("vrf_id").(int))
 
-	var deleteParameters = ipam.NewIPAMVrfsDeleteParams().WithID(id)
+	var deleteParameters = ipam.NewIpamVrfsDeleteParams().WithID(id)
 
 	c := meta.(*ProviderNetboxClient).client
 
-	out, err := c.IPAM.IPAMVrfsDelete(deleteParameters, nil)
+	out, err := c.Ipam.IpamVrfsDelete(deleteParameters, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMVrfsDelete: %v", err)
+		log.Debugf("Failed to execute IpamVrfsDelete: %v", err)
 	}
 
-	log.Debugf("Done Executing IPAMVrfsDelete: %v", out)
+	log.Debugf("Done Executing IpamVrfsDelete: %v", out)
 
 	return nil
 }
