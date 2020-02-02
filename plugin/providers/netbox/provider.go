@@ -2,13 +2,12 @@ package netbox
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
 var descriptions map[string]string
 
 // Provider returns a terraform.ResourceProvider.
-func Provider() terraform.ResourceProvider {
+func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema:         providerSchema(),
 		DataSourcesMap: providerDataSourcesMap(),
@@ -23,13 +22,13 @@ func providerSchema() map[string]*schema.Schema {
 		"app_id": &schema.Schema{
 			Type:        schema.TypeString,
 			Optional:    true,
-      DefaultFunc: schema.EnvDefaultFunc("NETBOX_APP_ID", nil),
+			DefaultFunc: schema.EnvDefaultFunc("NETBOX_APP_ID", nil),
 			Description: "API key used to access Netbox, generated under Admin -> Users -> Tokens and assigned to a user",
 		},
 		"endpoint": &schema.Schema{
 			Type:        schema.TypeString,
 			Optional:    true,
-      DefaultFunc: schema.EnvDefaultFunc("NETBOX_ENDPOINT_ADDR", nil),
+			DefaultFunc: schema.EnvDefaultFunc("NETBOX_ENDPOINT_ADDR", nil),
 			Description: "Endpoint of your Netbox instance",
 		},
 		/*
@@ -60,8 +59,8 @@ func providerResources() map[string]*schema.Resource {
 // List of supported data sources and their configuration fields.
 func providerDataSourcesMap() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
-		"netbox_vlans":    dataSourceNetboxVlans(),
-		"netbox_prefixes": dataSourceNetboxPrefixes(),
+		"netbox_vlans":      dataSourceNetboxVlans(),
+		"netbox_prefixes":   dataSourceNetboxPrefixes(),
 		"netbox_ip_address": dataSourceNetboxIPAddress(),
 	}
 }

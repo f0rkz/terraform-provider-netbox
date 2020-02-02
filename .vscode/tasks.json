@@ -6,7 +6,7 @@
 		{
 			"label": "build",
 			"type": "shell",
-			"command": "go install . && go build -o terraform-provider-netbox-wix && terraform init && terraform plan && TF_LOG=TRACE terraform apply",
+			"command": "go install . && go build -o terraform-provider-netbox && terraform init && terraform plan && TF_LOG=TRACE terraform apply",
 			"group": {
 				"kind": "build",
 				"isDefault": true

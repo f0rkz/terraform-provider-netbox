@@ -1,4 +1,4 @@
-module github.com/h0x91b-wix/terraform-provider-netbox-wix
+module github.com/h0x91b-wix/terraform-provider-netbox
 
 go 1.13
 
