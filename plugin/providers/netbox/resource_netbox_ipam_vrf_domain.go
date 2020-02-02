@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/netbox-community/go-netbox/netbox/client/ipam"
 	"github.com/netbox-community/go-netbox/netbox/models"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceNetboxIpamVrfDomain is the core Terraform resource structure for the netbox_ipam_vrf_domain resource.
@@ -62,12 +62,12 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 	tenantID := int64(d.Get("tenant_id").(int))
 
 	var parm = ipam.NewIPAMVrfsCreateParams().WithData(
-		&models.VRFCreateUpdate{
+		&models.WritableVRF{
 			Rd:            &routeDistinguisher,
 			Name:          &name,
 			Description:   description,
 			EnforceUnique: enforceUnique,
-			Tenant:        tenantID,
+			Tenant:        &tenantID,
 			Tags:          []string{},
 		},
 	)
@@ -106,12 +106,12 @@ func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{})
 	var parm = ipam.NewIPAMVrfsUpdateParams().
 		WithID(id).
 		WithData(
-			&models.VRFCreateUpdate{
+			&models.WritableVRF{
 				Rd:            &routeDistinguisher,
 				Name:          &name,
 				Description:   description,
 				EnforceUnique: enforceUnique,
-				Tenant:        tenantID,
+				Tenant:        &tenantID,
 				Tags:          []string{},
 			},
 		)

@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/netbox-community/go-netbox/netbox/client/ipam"
 	"github.com/netbox-community/go-netbox/netbox/models"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceNetboxIpamAggregate is the core Terraform resource structure for the netbox_ipam_aggregate resource.
@@ -59,7 +59,7 @@ func resourceNetboxIpamAggregateCreate(d *schema.ResourceData, meta interface{})
 	tags := []string{}
 
 	var parm = ipam.NewIPAMAggregatesCreateParams().WithData(
-		&models.AggregateCreateUpdate{
+		&models.WritableAggregate{
 			Prefix:      &prefix,
 			Description: description,
 			Rir:         &rirID,
@@ -104,7 +104,7 @@ func resourceNetboxIpamAggregateUpdate(d *schema.ResourceData, meta interface{})
 	tags := []string{}
 
 	var parm = ipam.NewIPAMAggregatesUpdateParams().WithID(int64(id)).WithData(
-		&models.AggregateCreateUpdate{
+		&models.WritableAggregate{
 			Prefix:      &prefix,
 			Description: description,
 			Rir:         &rirID,

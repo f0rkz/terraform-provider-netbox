@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/netbox-community/go-netbox/netbox/client/tenancy"
 	"github.com/netbox-community/go-netbox/netbox/models"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceNetboxOrgTenant is the core Terraform resource structure for the netbox_org_tenant resource.
@@ -61,13 +61,13 @@ func resourceNetboxOrgTenantCreate(d *schema.ResourceData, meta interface{}) err
 	tenantGroupID := int64(d.Get("tenant_group_id").(int))
 
 	var parm = tenancy.NewTenancyTenantsCreateParams().WithData(
-		&models.TenantCreateUpdate{
+		&models.WritableTenant{
 			Name:        &name,
 			Slug:        &slug,
 			Description: description,
 			Comments:    comments,
 			Tags:        []string{},
-			Group:       tenantGroupID,
+			Group:       &tenantGroupID,
 			// TODO Tenant Group
 		},
 	)
@@ -106,13 +106,13 @@ func resourceNetboxOrgTenantUpdate(d *schema.ResourceData, meta interface{}) err
 	var parm = tenancy.NewTenancyTenantsUpdateParams().
 		WithID(id).
 		WithData(
-			&models.TenantCreateUpdate{
+			&models.WritableTenant{
 				Name:        &name,
 				Slug:        &slug,
 				Description: description,
 				Comments:    comments,
 				Tags:        []string{},
-				Group:       tenantGroupID,
+				Group:       &tenantGroupID,
 			},
 		)
 

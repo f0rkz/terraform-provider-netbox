@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/netbox-community/go-netbox/netbox/client/ipam"
 	"github.com/netbox-community/go-netbox/netbox/models"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceNetboxIpamIpAddress is the core Terraform resource structure for the netbox_ipam_ip_address resource.
@@ -79,15 +79,15 @@ func resourceNetboxIpamIPAddressCreate(d *schema.ResourceData, meta interface{})
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
 
 	var parm = ipam.NewIPAMIPAddressesCreateParams().WithData(
-		&models.IPAddressCreateUpdate{
+		&models.WritableIPAddress{
 			Address:     &address,
 			Description: description,
-			Vrf:         vrfID,
-			Tenant:      tenantID,
+			Vrf:         &vrfID,
+			Tenant:      &tenantID,
 			Status:      status,
-			Role:        roleID,
-			NatInside:   natInsideID,
-			NatOutside:  natOutsideID,
+			Role:        &roleID,
+			NatInside:   &natInsideID,
+			NatOutside:  &natOutsideID,
 			// TODO Interface
 			Tags: []string{},
 		},
@@ -129,15 +129,15 @@ func resourceNetboxIpamIPAddressUpdate(d *schema.ResourceData, meta interface{})
 	var parm = ipam.NewIPAMIPAddressesUpdateParams().
 		WithID(id).
 		WithData(
-			&models.IPAddressCreateUpdate{
+			&models.WritableIPAddress{
 				Address:     &address,
 				Description: description,
-				Vrf:         vrfID,
-				Tenant:      tenantID,
+				Vrf:         &vrfID,
+				Tenant:      &tenantID,
 				Status:      status,
-				Role:        roleID,
-				NatInside:   natInsideID,
-				NatOutside:  natOutsideID,
+				Role:        &roleID,
+				NatInside:   &natInsideID,
+				NatOutside:  &natOutsideID,
 				// TODO Interface
 				Tags: []string{},
 			},

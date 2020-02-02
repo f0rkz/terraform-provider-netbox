@@ -5,9 +5,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/netbox-community/go-netbox/netbox/client/ipam"
 	"github.com/netbox-community/go-netbox/netbox/models"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // resourceNetboxIpamPrefix is the core Terraform resource structure for the netbox_ipam_Prefix_domain resource.
@@ -68,13 +68,13 @@ func resourceNetboxIpamPrefixCreate(d *schema.ResourceData, meta interface{}) er
 	tenantID := int64(d.Get("tenant_id").(int))
 
 	var parm = ipam.NewIPAMPrefixesCreateParams().WithData(
-		&models.PrefixCreateUpdate{
+		&models.WritablePrefix{
 			Prefix:      &prefix,
 			Description: description,
 			IsPool:      isPool,
 			Tags:        []string{},
-			Vrf:         vrfID,
-			Tenant:      tenantID,
+			Vrf:         &vrfID,
+			Tenant:      &tenantID,
 		},
 	)
 
@@ -113,13 +113,13 @@ func resourceNetboxIpamPrefixUpdate(d *schema.ResourceData, meta interface{}) er
 	var parm = ipam.NewIPAMPrefixesUpdateParams().
 		WithID(id).
 		WithData(
-			&models.PrefixCreateUpdate{
+			&models.WritablePrefix{
 				Prefix:      &prefix,
 				Description: description,
 				IsPool:      isPool,
 				Tags:        []string{},
-				Vrf:         vrfID,
-				Tenant:      tenantID,
+				Vrf:         &vrfID,
+				Tenant:      &tenantID,
 			},
 		)
 
