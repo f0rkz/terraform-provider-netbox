@@ -71,6 +71,11 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
 			param.SetVlanVid(&vlan_vid)
 		}
 
+		if prefix, prefixOk := d.GetOk("prefix"); prefixOk {
+			prefix_str := prefix.(string)
+			param.SetPrefix(&prefix_str)
+		}
+
 		if query, queryOk := d.GetOk("query"); queryOk {
 			query_str := query.(string)
 			param.SetQ(&query_str)

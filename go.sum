@@ -86,8 +86,6 @@ github.com/go-openapi/loads v0.19.4/go.mod h1:zZVHonKd8DXyxyw4yfnVjPzBjIQcLt0CCs
 github.com/go-openapi/runtime v0.0.0-20180920151709-4f900dc2ade9/go.mod h1:6v9a6LTXWQCdL8k1AO3cvqx5OtZY/Y9wKTgaoP6YRfA=
 github.com/go-openapi/runtime v0.19.0/go.mod h1:OwNfisksmmaZse4+gpV3Ne9AyMOlP1lt4sK4FXt0O64=
 github.com/go-openapi/runtime v0.19.4/go.mod h1:X277bwSUBxVlCYR3r7xgZZGKVvBd/29gLDlFGtJ8NL4=
-github.com/go-openapi/runtime v0.19.10 h1:UJ9h8j9t3PrQk9g6RiAQ2tWm7nXUwcX2LgrTsm6ClbI=
-github.com/go-openapi/runtime v0.19.10/go.mod h1:dhGWCTKRXlAfGnQG0ONViOZpjfg0m2gUt9nTQPQZuoo=
 github.com/go-openapi/runtime v0.19.11 h1:6J11dQiIV+BOLlMbk2YmM8RvGaOU38syeqy62qhh3W8=
 github.com/go-openapi/runtime v0.19.11/go.mod h1:dhGWCTKRXlAfGnQG0ONViOZpjfg0m2gUt9nTQPQZuoo=
 github.com/go-openapi/spec v0.17.0/go.mod h1:XkF/MOi14NmjsfZ8VtAKf8pIlbZzyoTvZsdfssdxcBI=
@@ -147,12 +145,10 @@ github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+
 github.com/googleapis/gax-go/v2 v2.0.4/go.mod h1:0Wqv26UfaUD9n4G6kQubkQ+KchISgw+vpHVxEJEs9eg=
 github.com/googleapis/gax-go/v2 v2.0.5 h1:sjZBwGj9Jlw33ImPtvFviGYvseOtDM7hkSKB7+Tv3SM=
 github.com/googleapis/gax-go/v2 v2.0.5/go.mod h1:DWXyrwAJ9X0FpwwEdw+IPEYBICEFu5mhpdKc/us6bOk=
-github.com/h0x91b-wix/go-netbox v0.0.0-20191226142847-a54653f8d8e1 h1:e9g2AJyP9iiIRAX/LMnQnnbKZoVmpIIj5GCXXcx20nc=
-github.com/h0x91b-wix/go-netbox v0.0.0-20191226142847-a54653f8d8e1/go.mod h1:UEAJI5Iwavwnji4rd7En8jNSir/XGIWf7igfKwKcy70=
 github.com/h0x91b-wix/go-netbox v0.0.0-20200202132252-340d8a5d08b0 h1:bfnMq2BsqeoCiFj4y7GJPGmmSfn9jNEcIELZgR/jfJk=
 github.com/h0x91b-wix/go-netbox v0.0.0-20200202132252-340d8a5d08b0/go.mod h1:rtN1yVDiLSTXLEryxd7fsh97V3duPZ/Q0+IubbiycV8=
-github.com/h0x91b-wix/terraform-provider-netbox-wix v0.1.0-alpha h1:RhIchBPZHoaZ3ZPBY5oFtRSO9zNtxaAqKJDYQuv3QAE=
-github.com/h0x91b-wix/terraform-provider-netbox-wix v0.1.0-alpha/go.mod h1:g0Lcs01PG9DfMjJrqH0rf76ces15WTyRvVYAzSI9ePA=
+github.com/h0x91b-wix/go-netbox v0.0.1 h1:OCCs4ImnZ3fnmMoZe3MRJ5JU/D1owf1ipECX/7sKQ1o=
+github.com/h0x91b-wix/go-netbox v0.0.1/go.mod h1:rtN1yVDiLSTXLEryxd7fsh97V3duPZ/Q0+IubbiycV8=
 github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/go-cleanhttp v0.5.0/go.mod h1:JpRdi6/HCYpAwUzNwuwqhbovhLtngrth3wmdIIUrZ80=
