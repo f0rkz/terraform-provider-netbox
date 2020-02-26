@@ -39,11 +39,11 @@ func resourceNetboxIpamIPAddress() *schema.Resource {
 				Optional: true,
 			},
 			"status": &schema.Schema{
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"role_id": &schema.Schema{
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"description": &schema.Schema{
@@ -71,11 +71,11 @@ func resourceNetboxIpamIPAddressCreate(d *schema.ResourceData, meta interface{})
 
 	address := d.Get("address").(string)
 	vrfID := int64(d.Get("vrf_id").(int))
-	tenantID := int64(d.Get("tenant_id").(int))
+	//tenantID := int64(d.Get("tenant_id").(int))
 	status := string(d.Get("status").(string))
 	roleID := string(d.Get("role_id").(string))
 	description := d.Get("description").(string)
-	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
+	//natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
 
 	var parm = ipam.NewIpamIPAddressesCreateParams().WithData(
@@ -83,11 +83,11 @@ func resourceNetboxIpamIPAddressCreate(d *schema.ResourceData, meta interface{})
 			Address:     &address,
 			Description: description,
 			Vrf:         &vrfID,
-			Tenant:      &tenantID,
-			Status:      status,
-			Role:        roleID,
-			NatInside:   &natInsideID,
-			NatOutside:  &natOutsideID,
+			//Tenant:      &tenantID,
+			Status: status,
+			Role:   roleID,
+			//NatInside: &natInsideID,
+			NatOutside: &natOutsideID,
 			// TODO Interface
 			Tags: []string{},
 		},
@@ -186,13 +186,13 @@ func resourceNetboxIpamIPAddressRead(d *schema.ResourceData, meta interface{}) e
 	}
 	d.Set("tenant_id", tenantID)
 
-	var status string
+	var status int64
 	if readResult.Payload.Status != nil {
 		status = *readResult.Payload.Status.Value
 	}
 	d.Set("status", status)
 
-	var roleID string
+	var roleID int64
 	if readResult.Payload.Role != nil {
 		roleID = *readResult.Payload.Role.Value
 	}

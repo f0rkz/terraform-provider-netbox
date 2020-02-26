@@ -1,5 +1,7 @@
 module github.com/h0x91b-wix/terraform-provider-netbox
 
+replace github.com/h0x91b-wix/go-netbox v0.0.1 => /home/peltzi/go/src/github.com/h0x91b-wix/go-netbox
+
 go 1.13
 
 require (
