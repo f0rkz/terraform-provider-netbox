@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 
-	"github.com/h0x91b-wix/go-netbox/netbox/client"
+	"github.com/netbox-community/go-netbox/netbox/client"
 
 	openapi_runtimeclient "github.com/go-openapi/runtime/client"
 )

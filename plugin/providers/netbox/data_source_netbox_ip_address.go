@@ -9,9 +9,9 @@ import (
 
 	// "errors"
 
-	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
-	"github.com/h0x91b-wix/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/netbox-community/go-netbox/netbox/client/ipam"
+	"github.com/netbox-community/go-netbox/netbox/models"
 )
 
 func dataSourceNetboxIPAddress() *schema.Resource {
@@ -44,7 +44,7 @@ func dataSourceNetboxIPAddressParse(d *schema.ResourceData, obj *models.IPAddres
 
 	// interface ?
 
-	log.Printf("Finished parsing results from IpamIPAddressesRead")
+	log.Printf("Finished parsing results from IPAMIPAddressesRead")
 }
 
 func dataSourceNetboxIPAddressAttrPrep(in string) (out string) {
@@ -60,19 +60,19 @@ func dataSourceNetboxIPAddressesRead(d *schema.ResourceData, meta interface{}) e
 
 	// primary key lookup, direct
 	if id, idOk := d.GetOk("id"); idOk {
-		parm := ipam.NewIpamIPAddressesReadParams()
+		parm := ipam.NewIPAMIPAddressesReadParams()
 		parm.SetID(int64(id.(int)))
 
-		out, err := c.Ipam.IpamIPAddressesRead(parm, nil)
+		out, err := c.IPAM.IPAMIPAddressesRead(parm, nil)
 
 		if err != nil {
-			log.Printf("error from IpamIPAddressesRead: %v\n", err)
+			log.Printf("error from IPAMIPAddressesRead: %v\n", err)
 			return err
 		}
 
 		dataSourceNetboxIPAddressParse(d, out.Payload)
 	} else { // anything else, requires a search
-		param := ipam.NewIpamIPAddressesListParams()
+		param := ipam.NewIPAMIPAddressesListParams()
 
 		// Add any lookup params
 
@@ -110,10 +110,10 @@ func dataSourceNetboxIPAddressesRead(d *schema.ResourceData, meta interface{}) e
 		limit := int64(2)
 		param.SetLimit(&limit)
 
-		out, err := c.Ipam.IpamIPAddressesList(param, nil)
+		out, err := c.IPAM.IPAMIPAddressesList(param, nil)
 
 		if err != nil {
-			log.Printf("error from IpamIPAddressesList: %v\n", err)
+			log.Printf("error from IPAMIPAddressesList: %v\n", err)
 			return err
 		}
 

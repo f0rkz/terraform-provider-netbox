@@ -44,24 +44,17 @@ func providerSchema() map[string]*schema.Schema {
 // List of supported resources and their configuration fields.
 func providerResources() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
-		// Ipam
-		"netbox_ipam_rir":        resourceNetboxRegionalInternetRegistry(),
-		"netbox_ipam_vrf":        resourceNetboxIpamVrfDomain(),
-		"netbox_ipam_aggregate":  resourceNetboxIpamAggregate(),
-		"netbox_ipam_prefix":     resourceNetboxIpamPrefix(),
-		"netbox_ipam_ip_address": resourceNetboxIpamIPAddress(),
-		// Org
-		"netbox_org_tenant":       resourceNetboxOrgTenant(),
-		"netbox_org_tenant_group": resourceNetboxOrgTenantGroup(),
+		// IPAM
+		"netbox_ipam_ip_address":             resourceNetboxIPAMIPAddress(),
+		"netbox_ipam_prefixes_available_ips": resourceNetboxIPAMPrefixesAvailableIps(),
 	}
 }
 
 // List of supported data sources and their configuration fields.
 func providerDataSourcesMap() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
-		"netbox_vlans":      dataSourceNetboxVlans(),
-		"netbox_prefixes":   dataSourceNetboxPrefixes(),
-		"netbox_ip_address": dataSourceNetboxIPAddress(),
+		"netbox_ip_address":             dataSourceNetboxIPAddress(),
+		"netbox_prefixes_available_ips": dataSourceNetboxPrefixesAvailableIps(),
 	}
 }
 

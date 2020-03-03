@@ -5,18 +5,28 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/h0x91b-wix/go-netbox/netbox/client/ipam"
-	"github.com/h0x91b-wix/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/netbox-community/go-netbox/netbox/client/ipam"
+	"github.com/netbox-community/go-netbox/netbox/models"
 )
 
-// resourceNetboxIpamIpAddress is the core Terraform resource structure for the netbox_ipam_ip_address resource.
-func resourceNetboxIpamIPAddress() *schema.Resource {
+// we need to convert some int64 pointers to nil in case Terraform SDK passed
+// value is 0, this due to https://github.com/hashicorp/terraform-plugin-sdk/issues/90
+func nilFromInt64Ptr(i *int64) *int64 {
+	if *i == int64(0) {
+		return nil
+	}
+
+	return i
+}
+
+// resourceNetboxIPAMIpAddress is the core Terraform resource structure for the netbox_ipam_ip_address resource.
+func resourceNetboxIPAMIPAddress() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceNetboxIpamIPAddressCreate,
-		Read:   resourceNetboxIpamIPAddressRead,
-		Update: resourceNetboxIpamIPAddressUpdate,
-		Delete: resourceNetboxIpamIPAddressDelete,
+		Create: resourceNetboxIPAMIPAddressCreate,
+		Read:   resourceNetboxIPAMIPAddressRead,
+		Update: resourceNetboxIPAMIPAddressUpdate,
+		Delete: resourceNetboxIPAMIPAddressDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -39,11 +49,11 @@ func resourceNetboxIpamIPAddress() *schema.Resource {
 				Optional: true,
 			},
 			"status": &schema.Schema{
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Optional: true,
 			},
 			"role_id": &schema.Schema{
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Optional: true,
 			},
 			"description": &schema.Schema{
@@ -65,40 +75,40 @@ func resourceNetboxIpamIPAddress() *schema.Resource {
 	}
 }
 
-// resourceNetboxIpamIpAddressCreate creates a new IP Address in Netbox.
-func resourceNetboxIpamIPAddressCreate(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIPAMIpAddressCreate creates a new IP Address in Netbox.
+func resourceNetboxIPAMIPAddressCreate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
 	address := d.Get("address").(string)
 	vrfID := int64(d.Get("vrf_id").(int))
-	//tenantID := int64(d.Get("tenant_id").(int))
-	status := string(d.Get("status").(string))
-	roleID := string(d.Get("role_id").(string))
+	tenantID := int64(d.Get("tenant_id").(int))
+	status := int64(d.Get("status").(int))
+	roleID := int64(d.Get("role_id").(int))
 	description := d.Get("description").(string)
-	//natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
+	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
 
-	var parm = ipam.NewIpamIPAddressesCreateParams().WithData(
+	var parm = ipam.NewIPAMIPAddressesCreateParams().WithData(
 		&models.WritableIPAddress{
 			Address:     &address,
 			Description: description,
 			Vrf:         &vrfID,
-			//Tenant:      &tenantID,
-			Status: status,
-			Role:   roleID,
-			//NatInside: &natInsideID,
-			NatOutside: &natOutsideID,
+			Tenant:      nilFromInt64Ptr(&tenantID),
+			Status:      status,
+			Role:        nilFromInt64Ptr(&roleID),
+			NatInside:   nilFromInt64Ptr(&natInsideID),
+			NatOutside:  &natOutsideID,
 			// TODO Interface
 			Tags: []string{},
 		},
 	)
 
-	log.Debugf("Executing IpamIPAddressesCreate against Netbox: %v", parm)
+	log.Debugf("Executing IPAMIPAddressesCreate against Netbox: %v", parm)
 
-	out, err := netboxClient.Ipam.IpamIPAddressesCreate(parm, nil)
+	out, err := netboxClient.IPAM.IPAMIPAddressesCreate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IpamIPAddressesCreate: %v", err)
+		log.Debugf("Failed to execute IPAMIPAddressesCreate: %v", err)
 
 		return err
 	}
@@ -106,13 +116,13 @@ func resourceNetboxIpamIPAddressCreate(d *schema.ResourceData, meta interface{})
 	d.SetId(fmt.Sprintf("ipam/ip-address/%d", out.Payload.ID))
 	d.Set("ip_address_id", out.Payload.ID)
 
-	log.Debugf("Done Executing IpamIPAddressesCreate: %v", out)
+	log.Debugf("Done Executing IPAMIPAddressesCreate: %v", out)
 
 	return nil
 }
 
-// resourceNetboxIpamIpAddressUpdate applies updates to a IP Address by ID when deltas are detected by Terraform.
-func resourceNetboxIpamIPAddressUpdate(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIPAMIpAddressUpdate applies updates to a IP Address by ID when deltas are detected by Terraform.
+func resourceNetboxIPAMIPAddressUpdate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
 	id := int64(d.Get("ip_address_id").(int))
@@ -120,53 +130,53 @@ func resourceNetboxIpamIPAddressUpdate(d *schema.ResourceData, meta interface{})
 	address := d.Get("address").(string)
 	vrfID := int64(d.Get("vrf_id").(int))
 	tenantID := int64(d.Get("tenant_id").(int))
-	status := string(d.Get("status").(string))
-	roleID := string(d.Get("role_id").(string))
+	status := int64(d.Get("status").(int))
+	roleID := int64(d.Get("role_id").(int))
 	description := d.Get("description").(string)
 	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
 
-	var parm = ipam.NewIpamIPAddressesUpdateParams().
+	var parm = ipam.NewIPAMIPAddressesUpdateParams().
 		WithID(id).
 		WithData(
 			&models.WritableIPAddress{
 				Address:     &address,
 				Description: description,
 				Vrf:         &vrfID,
-				Tenant:      &tenantID,
+				Tenant:      nilFromInt64Ptr(&tenantID),
 				Status:      status,
-				Role:        roleID,
-				NatInside:   &natInsideID,
+				Role:        nilFromInt64Ptr(&roleID),
+				NatInside:   nilFromInt64Ptr(&natInsideID),
 				NatOutside:  &natOutsideID,
 				// TODO Interface
 				Tags: []string{},
 			},
 		)
 
-	log.Debugf("Executing IpamIPAddressesUpdate against Netbox: %v", parm)
+	log.Debugf("Executing IPAMIPAddressesUpdate against Netbox: %v", parm)
 
-	out, err := netboxClient.Ipam.IpamIPAddressesUpdate(parm, nil)
+	out, err := netboxClient.IPAM.IPAMIPAddressesUpdate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IpamIPAddressesUpdate: %v", err)
+		log.Debugf("Failed to execute IPAMIPAddressesUpdate: %v", err)
 
 		return err
 	}
 
-	log.Debugf("Done Executing IpamIPAddressesUpdate: %v", out)
+	log.Debugf("Done Executing IPAMIPAddressesUpdate: %v", out)
 
 	return nil
 }
 
-// resourceNetboxIpamIpAddressRead reads an existing IP Address by ID.
-func resourceNetboxIpamIPAddressRead(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIPAMIpAddressRead reads an existing IP Address by ID.
+func resourceNetboxIPAMIPAddressRead(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
 	id := int64(d.Get("ip_address_id").(int))
 
-	var readParams = ipam.NewIpamIPAddressesReadParams().WithID(id)
+	var readParams = ipam.NewIPAMIPAddressesReadParams().WithID(id)
 
-	readResult, err := netboxClient.Ipam.IpamIPAddressesRead(readParams, nil)
+	readResult, err := netboxClient.IPAM.IPAMIPAddressesRead(readParams, nil)
 
 	if err != nil {
 		log.Debugf("Error fetching IpAddress ID # %d from Netbox = %v", id, err)
@@ -215,23 +225,23 @@ func resourceNetboxIpamIPAddressRead(d *schema.ResourceData, meta interface{}) e
 	return nil
 }
 
-// resourceNetboxIpamIpAddressDelete deletes an existing IP Address by ID.
-func resourceNetboxIpamIPAddressDelete(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIPAMIpAddressDelete deletes an existing IP Address by ID.
+func resourceNetboxIPAMIPAddressDelete(d *schema.ResourceData, meta interface{}) error {
 	log.Debugf("Deleting IpAddress: %v\n", d)
 
 	id := int64(d.Get("ip_address_id").(int))
 
-	var deleteParameters = ipam.NewIpamIPAddressesDeleteParams().WithID(id)
+	var deleteParameters = ipam.NewIPAMIPAddressesDeleteParams().WithID(id)
 
 	c := meta.(*ProviderNetboxClient).client
 
-	out, err := c.Ipam.IpamIPAddressesDelete(deleteParameters, nil)
+	out, err := c.IPAM.IPAMIPAddressesDelete(deleteParameters, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IpamIpAddresssDelete: %v", err)
+		log.Debugf("Failed to execute IPAMIpAddresssDelete: %v", err)
 	}
 
-	log.Debugf("Done Executing IpamIpAddresssDelete: %v", out)
+	log.Debugf("Done Executing IPAMIpAddresssDelete: %v", out)
 
 	return nil
 }
