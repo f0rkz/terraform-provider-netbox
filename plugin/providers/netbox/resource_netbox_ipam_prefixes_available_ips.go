@@ -61,6 +61,10 @@ func resourceNetboxIPAMPrefixesAvailableIps() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"interface_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -76,6 +80,7 @@ func resourceNetboxIPAMPrefixesAvailableIpsCreate(d *schema.ResourceData, meta i
 	description := d.Get("description").(string)
 	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
+	interfaceID := int64(d.Get("interface_id").(int))
 
 	var parm = ipam.NewIPAMPrefixesAvailableIpsCreateParams().
 		WithID(prefix_id).
@@ -88,6 +93,7 @@ func resourceNetboxIPAMPrefixesAvailableIpsCreate(d *schema.ResourceData, meta i
 				Role:        nilFromInt64Ptr(&roleID),
 				NatInside:   nilFromInt64Ptr(&natInsideID),
 				NatOutside:  &natOutsideID,
+				Interface:   nilFromInt64Ptr(&interfaceID),
 				// TODO Interface
 				Tags: []string{},
 			},

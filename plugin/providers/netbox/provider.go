@@ -45,9 +45,11 @@ func providerSchema() map[string]*schema.Schema {
 func providerResources() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
 		// IPAM
-		"netbox_ipam_ip_address":             resourceNetboxIPAMIPAddress(),
-		"netbox_ipam_prefixes_available_ips": resourceNetboxIPAMPrefixesAvailableIps(),
-		"netbox_virtualization_cluster":      resourceNetboxVirtualizationCluster(),
+		"netbox_ipam_ip_address":                resourceNetboxIPAMIPAddress(),
+		"netbox_ipam_prefixes_available_ips":    resourceNetboxIPAMPrefixesAvailableIps(),
+		"netbox_virtualization_cluster":         resourceNetboxVirtualizationCluster(),
+		"netbox_virtualization_virtual_machine": resourceNetboxVirtualizationVirtualMachine(),
+		"netbox_virtualization_interface":       resourceNetboxVirtualizationInterface(),
 	}
 }
 

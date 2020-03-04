@@ -58,6 +58,10 @@ func resourceNetboxIPAMIPAddress() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"interface_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 			// TODO interface - looks hard
 			// TODO tags
 			// TODO custom_fields
@@ -77,6 +81,7 @@ func resourceNetboxIPAMIPAddressCreate(d *schema.ResourceData, meta interface{})
 	description := d.Get("description").(string)
 	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
+	interfaceID := int64(d.Get("interface_id").(int))
 
 	var parm = ipam.NewIPAMIPAddressesCreateParams().WithData(
 		&models.WritableIPAddress{
@@ -88,6 +93,7 @@ func resourceNetboxIPAMIPAddressCreate(d *schema.ResourceData, meta interface{})
 			Role:        nilFromInt64Ptr(&roleID),
 			NatInside:   nilFromInt64Ptr(&natInsideID),
 			NatOutside:  &natOutsideID,
+			Interface:   nilFromInt64Ptr(&interfaceID),
 			// TODO Interface
 			Tags: []string{},
 		},
@@ -125,6 +131,7 @@ func resourceNetboxIPAMIPAddressUpdate(d *schema.ResourceData, meta interface{})
 	description := d.Get("description").(string)
 	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
+	interfaceID := int64(d.Get("interface_id").(int))
 
 	var parm = ipam.NewIPAMIPAddressesUpdateParams().
 		WithID(id).
@@ -138,6 +145,7 @@ func resourceNetboxIPAMIPAddressUpdate(d *schema.ResourceData, meta interface{})
 				Role:        nilFromInt64Ptr(&roleID),
 				NatInside:   nilFromInt64Ptr(&natInsideID),
 				NatOutside:  &natOutsideID,
+				Interface:   nilFromInt64Ptr(&interfaceID),
 				// TODO Interface
 				Tags: []string{},
 			},
@@ -211,6 +219,12 @@ func resourceNetboxIPAMIPAddressRead(d *schema.ResourceData, meta interface{}) e
 		natOutsideID = readResult.Payload.NatOutside.ID
 	}
 	d.Set("nat_outside_id", natOutsideID)
+
+	var interfaceID int64
+	if readResult.Payload.Interface != nil {
+		interfaceID = readResult.Payload.Interface.ID
+	}
+	d.Set("interface_id", interfaceID)
 
 	return nil
 }
