@@ -105,6 +105,8 @@ func resourceNetboxIPAMPrefixesAvailableIpsCreate(d *schema.ResourceData, meta i
 
 	d.SetId(fmt.Sprintf("ipam/ip-address/%d", out.Payload.ID))
 	d.Set("ip_address_id", out.Payload.ID)
+	d.Set("address", out.Payload.Address)
+	d.Set("status", out.Payload.Status)
 
 	log.Debugf("Done Executing IPAMPrefixesAvailableIpsCreate: %v", out)
 

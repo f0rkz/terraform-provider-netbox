@@ -10,16 +10,6 @@ import (
 	"github.com/netbox-community/go-netbox/netbox/models"
 )
 
-// we need to convert some int64 pointers to nil in case Terraform SDK passed
-// value is 0, this due to https://github.com/hashicorp/terraform-plugin-sdk/issues/90
-func nilFromInt64Ptr(i *int64) *int64 {
-	if *i == int64(0) {
-		return nil
-	}
-
-	return i
-}
-
 // resourceNetboxIPAMIpAddress is the core Terraform resource structure for the netbox_ipam_ip_address resource.
 func resourceNetboxIPAMIPAddress() *schema.Resource {
 	return &schema.Resource{
