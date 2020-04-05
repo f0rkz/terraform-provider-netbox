@@ -6,7 +6,7 @@ This repository holds a external plugin for a [Terraform][1] provider to manage 
 
 [1]: https://www.terraform.io/
 [2]: https://github.com/digitalocean/netbox
-[3]: https://github.com/h0x91b-wix/go-netbox
+[3]: https://github.com/peltzi/go-netbox
 
 ## About Netbox
 

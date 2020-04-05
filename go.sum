@@ -226,6 +226,8 @@ github.com/netbox-community/go-netbox v0.0.0-20200211112514-6bc857cb89fd/go.mod 
 github.com/oklog/run v1.0.0 h1:Ru7dDtJNOyC66gQ5dQmaCa0qIsAUFY3sFpK1Xk8igrw=
 github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQA=
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
+github.com/peltzi/go-netbox v0.0.0-20200303131646-f99f0069fe82 h1:LPbXC2766sf4o+eEkMVr8uUaLKyXHfDuAwltq8Ka1FU=
+github.com/peltzi/go-netbox v0.0.0-20200303131646-f99f0069fe82/go.mod h1:buCQjk0DVxjsdgxinaeySYrhjVlxRYWp/Nh+uOcgU/w=
 github.com/pierrec/lz4 v2.0.5+incompatible/go.mod h1:pdkljMzZIN41W+lC3N2tnIh5sFi+IEE17M5jbnwPHcY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

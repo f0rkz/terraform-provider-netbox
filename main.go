@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/h0x91b-wix/terraform-provider-netbox/plugin/providers/netbox"
+	"github.com/peltzi/terraform-provider-netbox/plugin/providers/netbox"
 
 	"github.com/hashicorp/terraform-plugin-sdk/plugin"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
