@@ -17,7 +17,7 @@ provider "netbox" {
 }
 ```
 
-Where `app_id` is a Netbox token created in the Netbox Admin portal (click your username in the top right -> Admin -> Tokens) and `endpoint` is a URI to your Netbox instance (do not include `/api`).
+Where `app_id` is a Netbox token created in the Netbox Admin portal (click your username in the top right -> Admin -> Tokens) and `endpoint` is a URI to your Netbox instance API.
 
 Once configured, you can use any of the following resources:
 
