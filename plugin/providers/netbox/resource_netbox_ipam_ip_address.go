@@ -2,6 +2,7 @@ package netbox
 
 import (
 	"fmt"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -210,13 +211,13 @@ func resourceNetboxIpamIPAddressRead(d *schema.ResourceData, meta interface{}) e
 
 	var status string
 	if readResult.Payload.Status != nil {
-		status = *readResult.Payload.Status.Label
+		status = strings.ToLower(*readResult.Payload.Status.Label)
 	}
 	d.Set("status", status)
 
 	var role string
 	if readResult.Payload.Role != nil {
-		role = *readResult.Payload.Role.Label
+		role = strings.ToLower(*readResult.Payload.Role.Label)
 	}
 	d.Set("role", role)
 
