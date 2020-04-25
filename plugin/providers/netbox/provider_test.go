@@ -14,7 +14,7 @@ var testAccProviders map[string]terraform.ResourceProvider
 const envErrMsg = `NETBOX_APP_ID, NETBOX_ENDPOINT_ADDR must be set for acceptance tests`
 
 func init() {
-	testAccProvider = Provider().(*schema.Provider)
+	testAccProvider = Provider()
 	testAccProviders = map[string]terraform.ResourceProvider{
 		"netbox": testAccProvider,
 	}
@@ -25,7 +25,7 @@ func TestProvider_impl(t *testing.T) {
 }
 
 func TestProvider(t *testing.T) {
-	if err := Provider().(*schema.Provider).InternalValidate(); err != nil {
+	if err := Provider().InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
 	}
 }
