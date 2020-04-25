@@ -1,8 +1,6 @@
 package netbox
 
 import (
-	// "fmt"
-	// "reflect"
 	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"

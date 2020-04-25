@@ -109,8 +109,7 @@ func resourceNetboxIpamIPAddressCreate(d *schema.ResourceData, meta interface{})
 			NatInside:   nilFromInt64Ptr(&natInsideID),
 			NatOutside:  &natOutsideID,
 			Interface:   nilFromInt64Ptr(&interfaceID),
-			// TODO Interface
-			Tags: []string{},
+			Tags:        []string{},
 		},
 	)
 
@@ -161,8 +160,7 @@ func resourceNetboxIpamIPAddressUpdate(d *schema.ResourceData, meta interface{})
 				NatInside:   nilFromInt64Ptr(&natInsideID),
 				NatOutside:  &natOutsideID,
 				Interface:   nilFromInt64Ptr(&interfaceID),
-				// TODO Interface
-				Tags: []string{},
+				Tags:        []string{},
 			},
 		)
 

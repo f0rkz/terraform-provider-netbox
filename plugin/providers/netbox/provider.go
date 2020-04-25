@@ -31,13 +31,6 @@ func providerSchema() map[string]*schema.Schema {
 			DefaultFunc: schema.EnvDefaultFunc("NETBOX_ENDPOINT_ADDR", nil),
 			Description: "Endpoint of your Netbox instance",
 		},
-		/*
-			"timeout": &schema.Schema{
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "",
-			},
-		*/
 	}
 }
 
@@ -68,7 +61,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	config := Config{
 		AppID:    d.Get("app_id").(string),
 		Endpoint: d.Get("endpoint").(string),
-		//Timeout:  d.Get("timeout").(string),
 	}
 	return config.Client()
 }

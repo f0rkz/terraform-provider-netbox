@@ -2,12 +2,9 @@ package netbox
 
 import (
 	"errors"
-	//"fmt"
 	"log"
 	"strconv"
 	"strings"
-
-	// "errors"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/netbox-community/go-netbox/netbox/client/ipam"
@@ -41,8 +38,6 @@ func dataSourceNetboxIPAddressParse(d *schema.ResourceData, obj *models.IPAddres
 	if obj.Tenant != nil {
 		d.Set("tenant", *obj.Tenant.Name)
 	}
-
-	// interface ?
 
 	log.Printf("Finished parsing results from IpamIPAddressesRead")
 }

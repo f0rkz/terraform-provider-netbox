@@ -79,22 +79,6 @@ func resourceNetboxVirtualizationVirtualMachine() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			//"interface": &schema.Schema{
-			//	Type:     schema.TypeList,
-			//	Optional: true,
-			//	Elem: &schema.Resource{
-			//		Schema: map[string]*schema.Schema{
-			//			"name": &schema.Schema{
-			//				Type:     schema.TypeString,
-			//				Required: true,
-			//			},
-			//			"interface_id": &schema.Schema{
-			//				Type:     schema.TypeInt,
-			//				Computed: true,
-			//			},
-			//		},
-			//	},
-			//},
 		},
 	}
 }
@@ -140,36 +124,6 @@ func resourceNetboxVirtualizationVirtualMachineCreate(d *schema.ResourceData, me
 	d.SetId(fmt.Sprintf("virtualization/virtual-machines/%d", out.Payload.ID))
 	d.Set("virtual_machine_id", out.Payload.ID)
 
-	//log.Debugf("Create virtual machine interfaces: %v", d.Get("interface"))
-
-	//for i := 0; i < d.Get("interface.#").(int); i++ {
-	//	prefix := fmt.Sprintf("interface.%d", i)
-	//	name := d.Get(prefix + ".name").(string)
-
-	//	var parm = virtualization.NewVirtualizationInterfacesCreateParams().WithData(
-	//		&models.WritableVirtualMachineInterface{
-	//			Name:           &name,
-	//			VirtualMachine: &out.Payload.ID,
-	//			TaggedVlans:    []int64{},
-	//			Tags:           []string{},
-	//		},
-	//	)
-
-	//	log.Debugf("Executin VirtualizationInterfacesCreate againts Netbox: %v", parm)
-
-	//	out, err := netboxClient.Virtualization.VirtualizationInterfacesCreate(parm, nil)
-
-	//	if err != nil {
-	//		log.Debugf("Failed to execute VirtualizationInterfacesCreate: %v", err)
-
-	//		return err
-	//	}
-
-	//	d.Set(prefix+".interface_id", out.Payload.ID)
-
-	//	log.Debugf("Done Executing VirtualizationInterfacesCreate: %v", out)
-	//}
-
 	log.Debugf("Done Executing VirtualizationVirtualMachinesCreate: %v", out)
 
 	return nil
@@ -189,38 +143,6 @@ func resourceNetboxVirtualizationVirtualMachineRead(d *schema.ResourceData, meta
 		log.Debugf("Error fetching Virtualization VirtualMachine ID # %d from Netbox = %v", id, err)
 		return err
 	}
-
-	//var interfacesListParm = virtualization.NewVirtualizationInterfacesListParams().WithVirtualMachineID(&id_string)
-
-	//interfacesResult, err := netboxClient.Virtualization.VirtualizationInterfacesList(interfacesListParm, nil)
-
-	//if err != nil {
-	//	log.Debugf("Error fetching Virtualization Interfaces for VirtualMachine ID # %d from Netbox = %v", id, err)
-	//}
-
-	//// New map for interface state
-	//var interfaces []map[string]interface{}
-
-	//// Current resource interface count
-	//currentInterfacesCount := d.Get("interface.#").(int)
-
-	//// Iterate netbox ifaces
-	//for _, netboxIface := range interfacesResult.Payload.Results {
-	//	for i := 0; i < currentInterfacesCount; i++ {
-	//		prefix := fmt.Sprintf("interface.%d", i)
-
-	//		if d.Get(prefix+".interface_id") == netboxIface.ID {
-	//			iface := map[string]interface{}{
-	//				"name":         netboxIface.Name,
-	//				"interface_id": netboxIface.ID,
-	//			}
-
-	//			interfaces = append(interfaces, iface)
-	//		}
-	//	}
-
-	//}
-	//d.Set("interface", interfaces)
 
 	var clusterID int64
 	if result.Payload.Cluster != nil {
@@ -263,39 +185,6 @@ func resourceNetboxVirtualizationVirtualMachineUpdate(d *schema.ResourceData, me
 	netboxClient := meta.(*ProviderNetboxClient).client
 
 	id := int64(d.Get("virtual_machine_id").(int))
-
-	//interfacesCount := d.Get("interface.#").(int)
-	//for i := 0; i < interfacesCount; i++ {
-	//	prefix := fmt.Sprintf("interface.%d", i)
-
-	//	if d.HasChange(prefix + ".name") {
-	//		ifaceName := d.Get(prefix + ".name").(string)
-	//		ifaceId := int64(d.Get(prefix + ".interface_id").(int))
-	//		var parm = virtualization.NewVirtualizationInterfacesPartialUpdateParams().
-	//			WithID(ifaceId).
-	//			WithData(
-	//				&models.WritableVirtualMachineInterface{
-	//					Name:           &ifaceName,
-	//					VirtualMachine: &id,
-	//				},
-	//			)
-
-	//		log.Debugf("Executin VirtualizationInterfacesPartialUpdate againts Netbox: %v", parm)
-
-	//		out, err := netboxClient.Virtualization.VirtualizationInterfacesPartialUpdate(parm, nil)
-
-	//		if err != nil {
-	//			log.Debugf("Failed to execute VirtualizationInterfacesPartialUpdate: %v", err)
-
-	//			return err
-	//		}
-
-	//		d.Set(prefix+".interface_id", out.Payload.ID)
-	//		d.Set(prefix+".name", out.Payload.Name)
-
-	//		log.Debugf("Done Executing VirtualizationInterfacesPartialUpdate: %v", out)
-	//	}
-	//}
 
 	clusterID := int64(d.Get("cluster_id").(int))
 	diskGB := int64(d.Get("disk_gb").(int))
