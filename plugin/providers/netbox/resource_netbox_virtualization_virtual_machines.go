@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/netbox-community/go-netbox/netbox/client/virtualization"
 	"github.com/netbox-community/go-netbox/netbox/models"
 )
@@ -63,8 +64,16 @@ func resourceNetboxVirtualizationVirtualMachine() *schema.Resource {
 				Optional: true,
 			},
 			"status": &schema.Schema{
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"offline",
+					"active",
+					"planned",
+					"staged",
+					"failed",
+					"decommissioning",
+				}, true),
 			},
 			"tenant_id": &schema.Schema{
 				Type:     schema.TypeInt,
@@ -112,7 +121,7 @@ func resourceNetboxVirtualizationVirtualMachineCreate(d *schema.ResourceData, me
 			Name:       &name,
 			PrimaryIp4: nilFromInt64Ptr(&primaryIp4ID),
 			Role:       nilFromInt64Ptr(&roleID),
-			Status:     int64(d.Get("status").(int)),
+			Status:     d.Get("status").(string),
 			Tenant:     nilFromInt64Ptr(&tenantID),
 			Tags:       []string{},
 		},
@@ -309,7 +318,7 @@ func resourceNetboxVirtualizationVirtualMachineUpdate(d *schema.ResourceData, me
 				Name:       &name,
 				PrimaryIp4: nilFromInt64Ptr(&primaryIp4ID),
 				Role:       nilFromInt64Ptr(&roleID),
-				Status:     int64(d.Get("status").(int)),
+				Status:     d.Get("status").(string),
 				Tenant:     nilFromInt64Ptr(&tenantID),
 				Tags:       []string{},
 			},

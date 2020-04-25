@@ -6,17 +6,18 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/netbox-community/go-netbox/netbox/client/ipam"
 	"github.com/netbox-community/go-netbox/netbox/models"
 )
 
-// resourceNetboxIPAMIpAddress is the core Terraform resource structure for the netbox_ipam_ip_address resource.
-func resourceNetboxIPAMIPAddress() *schema.Resource {
+// resourceNetboxIpamIpAddress is the core Terraform resource structure for the netbox_ipam_ip_address resource.
+func resourceNetboxIpamIPAddress() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceNetboxIPAMIPAddressCreate,
-		Read:   resourceNetboxIPAMIPAddressRead,
-		Update: resourceNetboxIPAMIPAddressUpdate,
-		Delete: resourceNetboxIPAMIPAddressDelete,
+		Create: resourceNetboxIpamIPAddressCreate,
+		Read:   resourceNetboxIpamIPAddressRead,
+		Update: resourceNetboxIpamIPAddressUpdate,
+		Delete: resourceNetboxIpamIPAddressDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -41,10 +42,26 @@ func resourceNetboxIPAMIPAddress() *schema.Resource {
 			"status": &schema.Schema{
 				Type:     schema.TypeInt,
 				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"active",
+					"reserved",
+					"deprecated",
+					"dhcp",
+				}, true),
 			},
-			"role_id": &schema.Schema{
-				Type:     schema.TypeInt,
+			"role": &schema.Schema{
+				Type:     schema.TypeString,
 				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"loopback",
+					"secondary",
+					"anycast",
+					"vip",
+					"vrrp",
+					"hsrp",
+					"glbp",
+					"carp",
+				}, true),
 			},
 			"description": &schema.Schema{
 				Type:     schema.TypeString,
@@ -62,35 +79,32 @@ func resourceNetboxIPAMIPAddress() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			// TODO interface - looks hard
-			// TODO tags
-			// TODO custom_fields
 		},
 	}
 }
 
-// resourceNetboxIPAMIpAddressCreate creates a new IP Address in Netbox.
-func resourceNetboxIPAMIPAddressCreate(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIpamIpAddressCreate creates a new IP Address in Netbox.
+func resourceNetboxIpamIPAddressCreate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
 	address := d.Get("address").(string)
 	vrfID := int64(d.Get("vrf_id").(int))
 	tenantID := int64(d.Get("tenant_id").(int))
-	status := int64(d.Get("status").(int))
-	roleID := int64(d.Get("role_id").(int))
+	status := d.Get("status").(string)
+	role := d.Get("role").(string)
 	description := d.Get("description").(string)
 	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
 	interfaceID := int64(d.Get("interface_id").(int))
 
-	var parm = ipam.NewIPAMIPAddressesCreateParams().WithData(
+	var parm = ipam.NewIpamIPAddressesCreateParams().WithData(
 		&models.WritableIPAddress{
 			Address:     &address,
 			Description: description,
 			Vrf:         &vrfID,
 			Tenant:      nilFromInt64Ptr(&tenantID),
 			Status:      status,
-			Role:        nilFromInt64Ptr(&roleID),
+			Role:        role,
 			NatInside:   nilFromInt64Ptr(&natInsideID),
 			NatOutside:  &natOutsideID,
 			Interface:   nilFromInt64Ptr(&interfaceID),
@@ -99,12 +113,12 @@ func resourceNetboxIPAMIPAddressCreate(d *schema.ResourceData, meta interface{})
 		},
 	)
 
-	log.Debugf("Executing IPAMIPAddressesCreate against Netbox: %v", parm)
+	log.Debugf("Executing IpamIPAddressesCreate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMIPAddressesCreate(parm, nil)
+	out, err := netboxClient.Ipam.IpamIPAddressesCreate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMIPAddressesCreate: %v", err)
+		log.Debugf("Failed to execute IpamIPAddressesCreate: %v", err)
 
 		return err
 	}
@@ -112,13 +126,13 @@ func resourceNetboxIPAMIPAddressCreate(d *schema.ResourceData, meta interface{})
 	d.SetId(fmt.Sprintf("ipam/ip-address/%d", out.Payload.ID))
 	d.Set("ip_address_id", out.Payload.ID)
 
-	log.Debugf("Done Executing IPAMIPAddressesCreate: %v", out)
+	log.Debugf("Done Executing IpamIPAddressesCreate: %v", out)
 
 	return nil
 }
 
-// resourceNetboxIPAMIpAddressUpdate applies updates to a IP Address by ID when deltas are detected by Terraform.
-func resourceNetboxIPAMIPAddressUpdate(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIpamIpAddressUpdate applies updates to a IP Address by ID when deltas are detected by Terraform.
+func resourceNetboxIpamIPAddressUpdate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
 	id := int64(d.Get("ip_address_id").(int))
@@ -126,14 +140,14 @@ func resourceNetboxIPAMIPAddressUpdate(d *schema.ResourceData, meta interface{})
 	address := d.Get("address").(string)
 	vrfID := int64(d.Get("vrf_id").(int))
 	tenantID := int64(d.Get("tenant_id").(int))
-	status := int64(d.Get("status").(int))
-	roleID := int64(d.Get("role_id").(int))
+	status := d.Get("status").(string)
+	role := d.Get("role").(string)
 	description := d.Get("description").(string)
 	natInsideID := int64(d.Get("nat_inside_ip_address_id").(int))
 	natOutsideID := int64(d.Get("nat_outside_ip_address_id").(int))
 	interfaceID := int64(d.Get("interface_id").(int))
 
-	var parm = ipam.NewIPAMIPAddressesUpdateParams().
+	var parm = ipam.NewIpamIPAddressesUpdateParams().
 		WithID(id).
 		WithData(
 			&models.WritableIPAddress{
@@ -142,7 +156,7 @@ func resourceNetboxIPAMIPAddressUpdate(d *schema.ResourceData, meta interface{})
 				Vrf:         &vrfID,
 				Tenant:      nilFromInt64Ptr(&tenantID),
 				Status:      status,
-				Role:        nilFromInt64Ptr(&roleID),
+				Role:        role,
 				NatInside:   nilFromInt64Ptr(&natInsideID),
 				NatOutside:  &natOutsideID,
 				Interface:   nilFromInt64Ptr(&interfaceID),
@@ -151,30 +165,30 @@ func resourceNetboxIPAMIPAddressUpdate(d *schema.ResourceData, meta interface{})
 			},
 		)
 
-	log.Debugf("Executing IPAMIPAddressesUpdate against Netbox: %v", parm)
+	log.Debugf("Executing IpamIPAddressesUpdate against Netbox: %v", parm)
 
-	out, err := netboxClient.IPAM.IPAMIPAddressesUpdate(parm, nil)
+	out, err := netboxClient.Ipam.IpamIPAddressesUpdate(parm, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMIPAddressesUpdate: %v", err)
+		log.Debugf("Failed to execute IpamIPAddressesUpdate: %v", err)
 
 		return err
 	}
 
-	log.Debugf("Done Executing IPAMIPAddressesUpdate: %v", out)
+	log.Debugf("Done Executing IpamIPAddressesUpdate: %v", out)
 
 	return nil
 }
 
-// resourceNetboxIPAMIpAddressRead reads an existing IP Address by ID.
-func resourceNetboxIPAMIPAddressRead(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIpamIpAddressRead reads an existing IP Address by ID.
+func resourceNetboxIpamIPAddressRead(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
 	id := int64(d.Get("ip_address_id").(int))
 
-	var readParams = ipam.NewIPAMIPAddressesReadParams().WithID(id)
+	var readParams = ipam.NewIpamIPAddressesReadParams().WithID(id)
 
-	readResult, err := netboxClient.IPAM.IPAMIPAddressesRead(readParams, nil)
+	readResult, err := netboxClient.Ipam.IpamIPAddressesRead(readParams, nil)
 
 	if err != nil {
 		log.Debugf("Error fetching IpAddress ID # %d from Netbox = %v", id, err)
@@ -194,17 +208,17 @@ func resourceNetboxIPAMIPAddressRead(d *schema.ResourceData, meta interface{}) e
 	}
 	d.Set("tenant_id", tenantID)
 
-	var status int64
+	var status string
 	if readResult.Payload.Status != nil {
-		status = *readResult.Payload.Status.Value
+		status = *readResult.Payload.Status.Label
 	}
 	d.Set("status", status)
 
-	var roleID int64
+	var role string
 	if readResult.Payload.Role != nil {
-		roleID = *readResult.Payload.Role.Value
+		role = *readResult.Payload.Role.Label
 	}
-	d.Set("role_id", roleID)
+	d.Set("role", role)
 
 	d.Set("description", readResult.Payload.Description)
 
@@ -229,23 +243,23 @@ func resourceNetboxIPAMIPAddressRead(d *schema.ResourceData, meta interface{}) e
 	return nil
 }
 
-// resourceNetboxIPAMIpAddressDelete deletes an existing IP Address by ID.
-func resourceNetboxIPAMIPAddressDelete(d *schema.ResourceData, meta interface{}) error {
+// resourceNetboxIpamIpAddressDelete deletes an existing IP Address by ID.
+func resourceNetboxIpamIPAddressDelete(d *schema.ResourceData, meta interface{}) error {
 	log.Debugf("Deleting IpAddress: %v\n", d)
 
 	id := int64(d.Get("ip_address_id").(int))
 
-	var deleteParameters = ipam.NewIPAMIPAddressesDeleteParams().WithID(id)
+	var deleteParameters = ipam.NewIpamIPAddressesDeleteParams().WithID(id)
 
 	c := meta.(*ProviderNetboxClient).client
 
-	out, err := c.IPAM.IPAMIPAddressesDelete(deleteParameters, nil)
+	out, err := c.Ipam.IpamIPAddressesDelete(deleteParameters, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMIpAddresssDelete: %v", err)
+		log.Debugf("Failed to execute IpamIpAddresssDelete: %v", err)
 	}
 
-	log.Debugf("Done Executing IPAMIpAddresssDelete: %v", out)
+	log.Debugf("Done Executing IpamIpAddresssDelete: %v", out)
 
 	return nil
 }

@@ -44,9 +44,9 @@ func providerSchema() map[string]*schema.Schema {
 // List of supported resources and their configuration fields.
 func providerResources() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
-		// IPAM
-		"netbox_ipam_ip_address":                resourceNetboxIPAMIPAddress(),
-		"netbox_ipam_prefixes_available_ips":    resourceNetboxIPAMPrefixesAvailableIps(),
+		// Ipam
+		"netbox_ipam_ip_address":                resourceNetboxIpamIPAddress(),
+		"netbox_ipam_prefixes_available_ips":    resourceNetboxIpamPrefixesAvailableIps(),
 		"netbox_virtualization_cluster":         resourceNetboxVirtualizationCluster(),
 		"netbox_virtualization_virtual_machine": resourceNetboxVirtualizationVirtualMachine(),
 		"netbox_virtualization_interface":       resourceNetboxVirtualizationInterface(),

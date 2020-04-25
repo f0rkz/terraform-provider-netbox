@@ -40,14 +40,14 @@ func dataSourceNetboxPrefixesAvailableIpsRead(d *schema.ResourceData, meta inter
 
 	id := int64(d.Get("prefix_id").(int))
 
-	var readParams = ipam.NewIPAMPrefixesAvailableIpsReadParams().WithID(id)
+	var readParams = ipam.NewIpamPrefixesAvailableIpsReadParams().WithID(id)
 
-	log.Debugf("Executing IPAMPrefixesAvailableIpsRead againts Netbox")
+	log.Debugf("Executing IpamPrefixesAvailableIpsRead againts Netbox")
 
-	result, err := netboxClient.IPAM.IPAMPrefixesAvailableIpsRead(readParams, nil)
+	result, err := netboxClient.Ipam.IpamPrefixesAvailableIpsRead(readParams, nil)
 
 	if err != nil {
-		log.Debugf("Failed to execute IPAMPrefixesAvailableIpsRead againts Netbox: %v", err)
+		log.Debugf("Failed to execute IpamPrefixesAvailableIpsRead againts Netbox: %v", err)
 
 		return err
 	}

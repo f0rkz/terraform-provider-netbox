@@ -42,6 +42,7 @@ func resourceNetboxVirtualizationInterfaceCreate(d *schema.ResourceData, meta in
 
 	name := d.Get("name").(string)
 	virtual_machine_id := int64(d.Get("virtual_machine_id").(int))
+	iface_type := "virtual"
 
 	var parm = virtualization.NewVirtualizationInterfacesCreateParams().WithData(
 		&models.WritableVirtualMachineInterface{
@@ -49,6 +50,7 @@ func resourceNetboxVirtualizationInterfaceCreate(d *schema.ResourceData, meta in
 			VirtualMachine: &virtual_machine_id,
 			TaggedVlans:    []int64{},
 			Tags:           []string{},
+			Type:           &iface_type,
 		},
 	)
 

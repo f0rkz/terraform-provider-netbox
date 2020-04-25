@@ -44,7 +44,7 @@ func dataSourceNetboxIPAddressParse(d *schema.ResourceData, obj *models.IPAddres
 
 	// interface ?
 
-	log.Printf("Finished parsing results from IPAMIPAddressesRead")
+	log.Printf("Finished parsing results from IpamIPAddressesRead")
 }
 
 func dataSourceNetboxIPAddressAttrPrep(in string) (out string) {
@@ -60,19 +60,19 @@ func dataSourceNetboxIPAddressesRead(d *schema.ResourceData, meta interface{}) e
 
 	// primary key lookup, direct
 	if id, idOk := d.GetOk("id"); idOk {
-		parm := ipam.NewIPAMIPAddressesReadParams()
+		parm := ipam.NewIpamIPAddressesReadParams()
 		parm.SetID(int64(id.(int)))
 
-		out, err := c.IPAM.IPAMIPAddressesRead(parm, nil)
+		out, err := c.Ipam.IpamIPAddressesRead(parm, nil)
 
 		if err != nil {
-			log.Printf("error from IPAMIPAddressesRead: %v\n", err)
+			log.Printf("error from IpamIPAddressesRead: %v\n", err)
 			return err
 		}
 
 		dataSourceNetboxIPAddressParse(d, out.Payload)
 	} else { // anything else, requires a search
-		param := ipam.NewIPAMIPAddressesListParams()
+		param := ipam.NewIpamIPAddressesListParams()
 
 		// Add any lookup params
 
@@ -110,10 +110,10 @@ func dataSourceNetboxIPAddressesRead(d *schema.ResourceData, meta interface{}) e
 		limit := int64(2)
 		param.SetLimit(&limit)
 
-		out, err := c.IPAM.IPAMIPAddressesList(param, nil)
+		out, err := c.Ipam.IpamIPAddressesList(param, nil)
 
 		if err != nil {
-			log.Printf("error from IPAMIPAddressesList: %v\n", err)
+			log.Printf("error from IpamIPAddressesList: %v\n", err)
 			return err
 		}
 
